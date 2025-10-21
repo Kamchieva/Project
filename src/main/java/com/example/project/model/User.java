@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "UserCredential")
 public class User {
 
     @Id
