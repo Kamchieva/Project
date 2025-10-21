@@ -1,3 +1,4 @@
+/.idea/
 .idea/sqldialects.xml
 .idea/misc.xml
 .idea/jpb-settings.xml
@@ -23,3 +24,6 @@
 .DS_Store
 .idea/compiler.xml
 .idea/misc.xml
+.idea/misc.xml
+*.class
+.DS_Store
