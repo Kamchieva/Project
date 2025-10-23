@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Create an Account</h1>
+
+    <div id="message-container"></div>
+
+    <form id="registration-form" th:action="@{/api/auth/register}" method="post">
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autofocus="autofocus" />
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+
+    <p>Already have an account? <a th:href="@{/login}">Log in here</a>.</p>
+
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', async function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const messageContainer = document.getElementById('message-container');
+                if (response.ok) {
+                    // On success, show a message and redirect to the login page after a short delay
+                    messageContainer.innerHTML = '<p style="color: green;">Registration successful! Redirecting to login...</p>';
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    // On failure, display an error message
+                    const errorText = await response.text();
+                    messageContainer.innerHTML = `<p style="color: red;">Registration failed: ${errorText}</p>`;
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+                document.getElementById('message-container').innerHTML = '<p style="color: red;">An unexpected error occurred. Please try again.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 package com.example.project.controller;
 
+import com.example.project.dto.UserRegistrationDto;
 import com.example.project.model.User;
 import com.example.project.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
@@ -18,18 +19,27 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String homePage() {
-        return "home";
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new UserRegistrationDto());
+        return "register";
     }
 
     @PostMapping("/register")
-    @ResponseBody
-    public User registerUser(@RequestBody User user) {
-        return userService.registerNewUser(user);
+    public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto) {
+        User newUser = new User();
+        newUser.setUsername(registrationDto.getUsername());
+        newUser.setPasswordHash(registrationDto.getPassword());
+        userService.registerNewUser(newUser);
+        return "redirect:/register?success";
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String login() {
         return "login";
     }
 }
