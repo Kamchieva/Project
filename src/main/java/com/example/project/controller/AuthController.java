@@ -6,6 +6,7 @@ import com.example.project.model.User;
 import com.example.project.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/api/login")
@@ -37,7 +40,7 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegistrationRequest registrationRequest) {
         User newUser = new User();
         newUser.setUsername(registrationRequest.getUsername());
-        newUser.setPasswordHash(registrationRequest.getPassword());
+        newUser.setPasswordHash(passwordEncoder.encode(registrationRequest.getPassword()));
         userService.registerNewUser(newUser);
         return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
     }

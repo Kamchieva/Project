@@ -8,16 +8,20 @@
 <body>
     <h1>Create an Account</h1>
 
-    <div id="message-container"></div>
+    <div th:if="${param.success}">
+        <p style="color: green;">Registration successful! You can now log in.</p>
+    </div>
 
-    <form id="registration-form" th:action="@{/api/auth/register}" method="post">
+    <form id="registration-form" th:action="@{/register}" th:object="${user}" method="post">
         <div>
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required autofocus="autofocus" />
+            <input type="text" id="username" th:field="*{username}" required autofocus="autofocus" />
+            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red;"></p>
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+            <input type="password" id="password" th:field="*{password}" required />
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;"></p>
         </div>
         <div>
             <button type="submit">Register</button>
@@ -26,41 +30,5 @@
 
     <p>Already have an account? <a th:href="@{/login}">Log in here</a>.</p>
 
-    <script>
-        document.getElementById('registration-form').addEventListener('submit', async function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
-
-            const form = event.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                });
-
-                const messageContainer = document.getElementById('message-container');
-                if (response.ok) {
-                    // On success, show a message and redirect to the login page after a short delay
-                    messageContainer.innerHTML = '<p style="color: green;">Registration successful! Redirecting to login...</p>';
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 2000);
-                } else {
-                    // On failure, display an error message
-                    const errorText = await response.text();
-                    messageContainer.innerHTML = `<p style="color: red;">Registration failed: ${errorText}</p>`;
-                }
-            } catch (error) {
-                console.error('Error during registration:', error);
-                document.getElementById('message-container').innerHTML = '<p style="color: red;">An unexpected error occurred. Please try again.</p>';
-            }
-        });
-    </script>
 </body>
 </html>

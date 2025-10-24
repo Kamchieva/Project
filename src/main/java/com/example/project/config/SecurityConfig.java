@@ -19,17 +19,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/register", "/login", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/api/auth/register", "/api/login").permitAll()
+                        // Permit access to static resources, public pages, and API endpoints
+                        .requestMatchers(
+                                "/", "/register", "/login",
+                                "/css/**", "/js/**", "/images/**",
+                                "/h2-console/**",
+                                "/api/auth/**", "/api/login"
+                        ).permitAll()
+                        // All other requests must be authenticated
                         .anyRequest().authenticated()
                 )
+                // Configure form login
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
-                );
+                )
+                // Disable CSRF for simplicity
+                .csrf(AbstractHttpConfigurer::disable)
+                // Disable frame options to allow H2 console
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }

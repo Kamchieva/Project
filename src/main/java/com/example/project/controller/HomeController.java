@@ -5,6 +5,7 @@ import com.example.project.model.User;
 import com.example.project.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,11 @@ public class HomeController {
     }
 
     @PostMapping("/register")
-    public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto) {
+    public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "register"; // Return to the form if there are validation errors
+        }
+
         User newUser = new User();
         newUser.setUsername(registrationDto.getUsername());
         newUser.setPasswordHash(registrationDto.getPassword());
