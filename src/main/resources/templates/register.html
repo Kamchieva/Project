@@ -8,8 +8,9 @@
 <body>
     <h1>Create an Account</h1>
 
-    <div th:if="${param.success}">
-        <p style="color: green;">Registration successful! You can now log in.</p>
+    <!-- Display the success message from the flash attribute -->
+    <div th:if="${successMessage}">
+        <p style="color: green;" th:text="${successMessage}"></p>
     </div>
 
     <form id="registration-form" th:action="@{/register}" th:object="${user}" method="post">
