@@ -27,3 +27,4 @@
 .idea/misc.xml
 *.class
 .DS_Store
+application.properties
