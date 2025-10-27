@@ -5,8 +5,6 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <!-- This should be a valid version, not '3.5.6'. Valid versions are available on Maven Central.
-        For example, 3.3.4 (as of Oct 2024). -->
         <version>3.3.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
@@ -17,8 +15,6 @@
     <name>project</name>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <!-- Java 25 is not a standard release. Using a supported LTS version like 17 or 21 is best practice. -->
-        <!-- For the example parent version 3.3.4, Java 17 is the default. -->
         <java.version>17</java.version>
     </properties>
 
@@ -40,6 +36,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
@@ -55,17 +55,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -82,9 +80,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!-- The maven-compiler-plugin configuration is usually unnecessary with Spring Boot parent -->
-            <!-- The spring-boot-maven-plugin automatically configures it. -->
-            <!-- If needed for specific IDEs like Eclipse, you would add it. -->
         </plugins>
     </build>
 
