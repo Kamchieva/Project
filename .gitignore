@@ -1,4 +1,5 @@
-/.idea/
+/target/*
+/.idea/*
 .idea/sqldialects.xml
 .idea/misc.xml
 .idea/jpb-settings.xml
