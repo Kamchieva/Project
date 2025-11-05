@@ -1,6 +1,7 @@
 package com.example.project.controller;
 
 import com.example.project.dto.LoginRequest;
+import com.example.project.dto.LoginResponse;
 import com.example.project.dto.RegistrationRequest;
 import com.example.project.model.User;
 import com.example.project.service.UserService;
@@ -23,16 +24,18 @@ public class AuthController {
     }
 
     @PostMapping("/api/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         User authenticatedUser = userService.authenticateUser(
-            loginRequest.getUsername(),
-            loginRequest.getPassword()
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
         );
-        
+
         if (authenticatedUser != null) {
-            return "Login successful for user: " + authenticatedUser.getUsername();
+            LoginResponse response = new LoginResponse("ok", "Login successful for user: " + authenticatedUser.getUsername());
+            return ResponseEntity.ok(response);
         } else {
-            return "Invalid credentials.";
+            LoginResponse response = new LoginResponse("notok", "Invalid credentials.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
 
