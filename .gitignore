@@ -1,31 +1,20 @@
-/target/*
-/.idea/*
-.idea/sqldialects.xml
-.idea/misc.xml
-.idea/jpb-settings.xml
-.idea/jpa.xml
-.idea/diff-generator.xml
-.idea/dbnavigator.xml
-.idea/dataSources/48c0b4dc-fd3b-4b1e-9648-4e20b1f54dea/storage_v2/_src_/database/PROJECT_WORK.lxTkww/schema/PUBLIC.aaZQjQ.meta
-.idea/dataSources/48c0b4dc-fd3b-4b1e-9648-4e20b1f54dea/storage_v2/_src_/database/PROJECT_WORK.lxTkww/schema/INFORMATION_SCHEMA.NBgcMw.meta
-.idea/dataSources/48c0b4dc-fd3b-4b1e-9648-4e20b1f54dea/storage_v2/_src_/database/PROJECT_WORK.lxTkww.meta
-.idea/dataSources/48c0b4dc-fd3b-4b1e-9648-4e20b1f54dea.xml
-.idea/dataSources.xml
-.idea/dataSources.local.xml
-.idea/data_source_mapping.xml
-.idea/compiler.xml
+# Compiled output
+/target/
+
+# IDE files
+/.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build files
 .DS_Store
-.idea/compiler.xml
-.idea/misc.xml
-.idea/compiler.xml
-.idea/misc.xml
-.DS_Store
-.idea/compiler.xml
-.idea/misc.xml
-.DS_Store
-.idea/compiler.xml
-.idea/misc.xml
-.idea/misc.xml
-*.class
-.DS_Store
+
+# Sensitive properties
 application.properties
+
+# Log files
+*.log
+
+# Binary files
+*.class
