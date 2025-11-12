@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -59,7 +61,8 @@ class UserServiceTest {
         // Arrange
         String rawPassword = "password123";
         user.setPasswordHash("hashedPassword");
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        // Mock the repository to return an Optional containing the user
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(rawPassword, user.getPasswordHash())).thenReturn(true);
 
         // Act
@@ -74,7 +77,8 @@ class UserServiceTest {
     void whenAuthenticateUser_withIncorrectCredentials_thenNullIsReturned() {
         // Arrange
         String rawPassword = "wrongPassword";
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        // Mock the repository to return an Optional containing the user
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(rawPassword, user.getPasswordHash())).thenReturn(false);
 
         // Act
@@ -88,7 +92,8 @@ class UserServiceTest {
     void whenAuthenticateUser_withNonExistentUser_thenNullIsReturned() {
         // Arrange
         String username = "nonexistentuser";
-        when(userRepository.findByUsername(username)).thenReturn(null);
+        // Mock the repository to return an empty Optional
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // Act
         User authenticatedUser = userService.authenticateUser(username, "anypassword");
