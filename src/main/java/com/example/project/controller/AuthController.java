@@ -1,50 +1,62 @@
 package com.example.project.controller;
 
+import com.example.project.dto.JwtAuthenticationResponse;
 import com.example.project.dto.LoginRequest;
-import com.example.project.dto.LoginResponse;
 import com.example.project.dto.RegistrationRequest;
 import com.example.project.model.User;
+import com.example.project.security.JwtTokenProvider;
 import com.example.project.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, UserService userService, PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/api/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        User authenticatedUser = userService.authenticateUser(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
         );
 
-        if (authenticatedUser != null) {
-            LoginResponse response = new LoginResponse("ok", "Login successful for user: " + authenticatedUser.getUsername());
-            return ResponseEntity.ok(response);
-        } else {
-            LoginResponse response = new LoginResponse("notok", "Invalid credentials.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
-    @PostMapping("/api/auth/register")
-    public ResponseEntity<String> register(@RequestBody RegistrationRequest registrationRequest) {
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
         User newUser = new User();
         newUser.setUsername(registrationRequest.getUsername());
         newUser.setPasswordHash(passwordEncoder.encode(registrationRequest.getPassword()));
         userService.registerNewUser(newUser);
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
+
+        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 }
